@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMIC STRIKER - 넥스트 제네레이션 스페이스 슈터</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#070712',
+                        'space-dark': '#0b0d1b',
+                        'space-card': 'rgba(15, 18, 38, 0.75)',
+                        'neon-cyan': '#00f3ff',
+                        'neon-pink': '#ff007f',
+                        'neon-purple': '#9d4edd',
+                        'neon-yellow': '#ffe600'
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        sans: ['Pretendard', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #070712;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(15, 20, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(18, 24, 52, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 243, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Neon Glow Utility */
+        .glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8), 0 0 25px rgba(0, 243, 255, 0.4);
+        }
+        .glow-pink {
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.8), 0 0 25px rgba(255, 0, 127, 0.4);
+        }
+        .glow-box-cyan {
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+        .glow-box-pink {
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+
+        /* Scanline Overlay */
+        .scanline-bg {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 243, 255, 0.03) 50%,
+                rgba(0, 243, 255, 0.03)
+            );
+            background-size: 100% 4px;
+        }
+
+        /* Button Pulse */
+        .btn-neon {
+            position: relative;
+            background: linear-gradient(90deg, #00f3ff, #9d4edd);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+        .btn-neon:hover {
+            background-position: right center;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.7);
+        }
+    </style>
+</head>
+<body class="scanline-bg relative selection:bg-neon-cyan selection:text-black">
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 glass-panel border-b border-cyan-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple p-0.5 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                    <div class="w-full h-full bg-void rounded-[7px] flex items-center justify-center">
+                        <i class="fas fa-rocket text-neon-cyan text-lg"></i>
+                    </div>
+                </div>
+                <span class="font-orbitron font-black text-2xl tracking-wider text-white group-hover:text-neon-cyan transition-colors">
+                    COSMIC<span class="text-neon-pink">.</span>STRIKER
+                </span>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wider uppercase text-gray-300">
+                <a href="#about" class="hover:text-neon-cyan transition-colors">게임 소개</a>
+                <a href="#demo" class="hover:text-neon-cyan transition-colors text-neon-cyan flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-neon-cyan animate-ping"></span> 데모 플레이
+                </a>
+                <a href="#fleet" class="hover:text-neon-cyan transition-colors">함선 격납고</a>
+                <a href="#lore" class="hover:text-neon-cyan transition-colors">은하계 로어</a>
+                <a href="#leaderboard" class="hover:text-neon-cyan transition-colors">명예의 전당</a>
+                <a href="#download" class="hover:text-neon-cyan transition-colors">다운로드</a>
+            </nav>
+
+            <!-- CTA Buttons -->
+            <div class="hidden sm:flex items-center gap-4">
+                <button onclick="playUiSound(); scrollToSection('demo')" class="btn-neon text-black font-orbitron font-bold text-xs uppercase px-5 py-2.5 rounded-lg tracking-wider">
+                    <i class="fas fa-play mr-2"></i> 즉시 시작
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobileMenuBtn" class="md:hidden text-gray-300 text-2xl hover:text-neon-cyan focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-t border-cyan-500/20 px-4 pt-2 pb-6 space-y-3 font-orbitron text-sm">
+            <a href="#about" class="block py-2 text-gray-300 hover:text-neon-cyan">게임 소개</a>
+            <a href="#demo" class="block py-2 text-neon-cyan">데모 플레이</a>
+            <a href="#fleet" class="block py-2 text-gray-300 hover:text-neon-cyan">함선 격납고</a>
+            <a href="#lore" class="block py-2 text-gray-300 hover:text-neon-cyan">은하계 로어</a>
+            <a href="#leaderboard" class="block py-2 text-gray-300 hover:text-neon-cyan">명예의 전당</a>
+            <a href="#download" class="block py-2 text-gray-300 hover:text-neon-cyan">다운로드</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Interactive Starfield Canvas -->
+        <canvas id="heroStarfield" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+        
+        <!-- Background Radial Gradient -->
+        <div class="absolute inset-0 bg-radial-vignette opacity-70 pointer-events-none z-0" style="background: radial-gradient(circle at center, rgba(0, 243, 255, 0.1) 0%, rgba(7, 7, 18, 0.95) 80%);"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center flex flex-col items-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel text-xs font-orbitron text-neon-cyan border border-neon-cyan/40 mb-6 animate-bounce">
+                <span class="w-2 h-2 rounded-full bg-neon-cyan"></span> NEXT-GEN RETRO SHOOTER v2.5
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-orbitron font-black tracking-tight text-white mb-6 leading-none">
+                COSMIC <span class="bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent glow-cyan">STRIKER</span>
+            </h1>
+
+            <p class="max-w-2xl text-lg sm:text-xl text-gray-300 mb-10 font-sans font-light leading-relaxed">
+                끝없는 외계 함대의 침공에 맞서 은하계의 평화를 되찾으세요.<br class="hidden sm:block">
+                화려한 네온 비주얼, 강력한 기체 업그레이드, 압도적인 보스전이 기다립니다.
+            </p>
+
+            <!-- CTA Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                <a href="#demo" onclick="playUiSound()" class="btn-neon text-black font-orbitron font-extrabold text-sm uppercase px-8 py-4 rounded-xl flex items-center justify-center gap-3 tracking-wider shadow-lg shadow-cyan-500/20">
+                    <i class="fas fa-gamepad text-lg"></i> 웹 데모 플레이
+                </a>
+                <button onclick="openTrailerModal()" class="glass-panel hover:bg-cyan-500/10 text-neon-cyan font-orbitron font-bold text-sm uppercase px-8 py-4 rounded-xl border border-neon-cyan/40 flex items-center justify-center gap-3 transition">
+                    <i class="fas fa-play-circle text-lg"></i> 트레일러 감상
+                </button>
+                <a href="#download" onclick="playUiSound()" class="glass-panel hover:bg-pink-500/10 text-neon-pink font-orbitron font-bold text-sm uppercase px-8 py-4 rounded-xl border border-neon-pink/40 flex items-center justify-center gap-3 transition">
+                    <i class="fas fa-download text-lg"></i> 게임 다운로드
+                </a>
+            </div>
+
+            <!-- Quick Stats Banner -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 w-full max-w-4xl glass-panel p-6 rounded-2xl border-cyan-500/30">
+                <div>
+                    <div class="font-orbitron font-bold text-2xl text-neon-cyan">4K / 120 FPS</div>
+                    <div class="text-xs text-gray-400 mt-1">고해상도 네온 그래픽</div>
+                </div>
+                <div>
+                    <div class="font-orbitron font-bold text-2xl text-neon-pink">50+</div>
+                    <div class="text-xs text-gray-400 mt-1">다채로운 스테이지</div>
+                </div>
+                <div>
+                    <div class="font-orbitron font-bold text-2xl text-neon-purple">12종</div>
+                    <div class="text-xs text-gray-400 mt-1">커스텀 전투기</div>
+                </div>
+                <div>
+                    <div class="font-orbitron font-bold text-2xl text-neon-yellow">글로벌</div>
+                    <div class="text-xs text-gray-400 mt-1">실시간 리더보드</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid Section -->
+    <section id="about" class="py-24 relative z-10 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-orbitron font-bold text-neon-cyan tracking-widest uppercase mb-2">GAME FEATURES</h2>
+                <p class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white">최고의 스페이스 슈팅 경험</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-neon-cyan to-neon-pink mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center text-neon-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-skull-crossbones"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">거대 보스 배틀</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        각 성계의 관문을 지키는 기계 요새 및 초대형 외계 함선과의 차원이 다른 대규모 전투를 경험하세요.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-pink/10 border border-neon-pink/30 flex items-center justify-center text-neon-pink text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">무기 & 커스텀 아키텍처</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        플라즈마 캐논, 추적 미사일, 체인 레이저 등 다양한 무기 시스템을조합하여 자신만의 전투기를 구축하세요.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-purple/10 border border-neon-purple/30 flex items-center justify-center text-neon-purple text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">글로벌 랭킹 매치</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        전 세계 파일럿들과 점수를 겨루고, 주간/월간 시즌 리더보드의 정상에 이름을 올리세요.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-yellow/10 border border-neon-yellow/30 flex items-center justify-center text-neon-yellow text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">다이내믹 네온 아트</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        레트로 아케이드 감성을 현대적인 레트로-퓨처리즘 시각 효과와 매끄러운 파티클 엔진으로 재해석했습니다.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">신스웨이브 OST</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        아드레날린을 자극하는 폭발적인 신스웨이브 및 사이버펑크 사운드트랙이 전투의 몰입감을 극대화합니다.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-crosshairs"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-3">크로스 플랫폼 지원</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        PC, 모바일, 웹 브라우저 어디서나 동일한 진행 상황과 편안한 컨트롤 옵션을 제공합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Playable Mini Game Canvas Demo Section -->
+    <section id="demo" class="py-20 relative z-10 bg-space-dark/80 border-y border-cyan-500/20">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <span class="inline-block px-3 py-1 rounded-full bg-neon-pink/20 text-neon-pink text-xs font-orbitron font-bold mb-2">LIVE DEMO</span>
+                <h2 class="text-3xl sm:text-5xl font-orbitron font-black text-white">웹 브라우저 데모 체험</h2>
+                <p class="text-gray-400 text-sm mt-2">아래에서 직접 게임을 플레이해보세요! (마우스 / 터치 / 키보드 지원)</p>
+            </div>
+
+            <!-- Game Container Window -->
+            <div class="relative w-full aspect-[4/3] sm:aspect-[16/9] max-h-[650px] rounded-2xl overflow-hidden glass-panel border-2 border-neon-cyan/40 shadow-2xl shadow-cyan-500/10 flex flex-col">
+                <!-- Top Status Bar -->
+                <div class="bg-void/90 px-4 py-2 border-b border-cyan-500/30 flex items-center justify-between font-orbitron text-xs z-20">
+                    <div class="flex items-center gap-4">
+                        <span class="text-neon-cyan font-bold"><i class="fas fa-shield-alt mr-1"></i> COSMIC ENGINE v1.2</span>
+                        <span id="demoStatusText" class="text-gray-400 hidden sm:inline">대기 중... PLAY 버튼을 누르세요</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="demoMuteBtn" class="hover:text-neon-cyan text-gray-400 transition" title="음소거 토글">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button id="demoFullscreenBtn" class="hover:text-neon-cyan text-gray-400 transition" title="전체화면">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Actual Game Canvas Wrapper -->
+                <div class="relative flex-1 w-full h-full bg-void overflow-hidden">
+                    <canvas id="miniGameCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+                    <!-- Game Overlay - Start Screen -->
+                    <div id="gameStartOverlay" class="absolute inset-0 bg-void/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30">
+                        <i class="fas fa-rocket text-5xl text-neon-cyan mb-4 animate-pulse"></i>
+                        <h3 class="font-orbitron font-black text-3xl sm:text-4xl text-white mb-2">COSMIC STRIKER DEMO</h3>
+                        <p class="text-gray-300 text-sm max-w-md mb-6">
+                            방향키/WASD 또는 마우스 드래그로 이동하세요.<br>
+                            스페이스바 또는 클릭으로 레이저를 발사합니다!
+                        </p>
+                        <button id="btnStartMiniGame" class="btn-neon text-black font-orbitron font-extrabold px-8 py-3.5 rounded-xl text-base tracking-wider uppercase cursor-pointer">
+                            <i class="fas fa-play mr-2"></i> GAME START
+                        </button>
+                    </div>
+
+                    <!-- Game Overlay - Game Over Screen -->
+                    <div id="gameOverOverlay" class="absolute inset-0 bg-void/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 hidden">
+                        <h3 class="font-orbitron font-black text-4xl text-neon-pink mb-2 glow-pink">MISSION FAILED</h3>
+                        <p class="text-gray-400 text-sm mb-4">기체가 파괴되었습니다!</p>
+                        <div class="bg-space-dark/80 border border-slate-700 px-6 py-3 rounded-xl mb-6 font-orbitron">
+                            <div class="text-xs text-gray-400">FINAL SCORE</div>
+                            <div id="finalScoreDisplay" class="text-3xl font-bold text-neon-cyan">000000</div>
+                        </div>
+                        <button id="btnRestartMiniGame" class="btn-neon text-black font-orbitron font-extrabold px-8 py-3.5 rounded-xl text-base tracking-wider uppercase cursor-pointer">
+                            <i class="fas fa-redo mr-2"></i> AGAIN RETRY
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Game Control Info Bar -->
+                <div class="bg-space-dark px-4 py-2 text-xs text-gray-400 flex flex-wrap justify-between items-center gap-2 border-t border-slate-800">
+                    <div>
+                        <span class="text-neon-cyan font-semibold">조작법:</span> [W/A/S/D or 방향키] 이동 | [Space / 마우스클릭] 발사
+                    </div>
+                    <div>
+                        <span class="text-neon-pink font-semibold">팁:</span> 아이템(S: 실드, W: 무기 강화)을 획득하세요!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Starship Fleet Showcase / Hangar -->
+    <section id="fleet" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-orbitron font-bold text-neon-pink tracking-widest uppercase mb-2">STARSHIP HANGAR</h2>
+                <p class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white">주요 함선 라인업</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-neon-pink to-neon-purple mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Fleet Selector Tabs -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Ship List Controls -->
+                <div class="lg:col-span-4 flex flex-col gap-4">
+                    <button onclick="selectShip('alpha')" id="shipBtn-alpha" class="ship-selector-btn glass-panel p-5 rounded-2xl text-left border-l-4 border-l-neon-cyan transition flex items-center justify-between">
+                        <div>
+                            <div class="font-orbitron font-bold text-lg text-white">ALPHA FIGHTER</div>
+                            <div class="text-xs text-neon-cyan">범용 다목적 요격기</div>
+                        </div>
+                        <i class="fas fa-chevron-right text-neon-cyan"></i>
+                    </button>
+
+                    <button onclick="selectShip('phantom')" id="shipBtn-phantom" class="ship-selector-btn glass-panel p-5 rounded-2xl text-left border-l-4 border-l-transparent transition flex items-center justify-between">
+                        <div>
+                            <div class="font-orbitron font-bold text-lg text-white">PHANTOM STEALTH</div>
+                            <div class="text-xs text-gray-400">고속 은폐 및 기습 특화</div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+
+                    <button onclick="selectShip('titan')" id="shipBtn-titan" class="ship-selector-btn glass-panel p-5 rounded-2xl text-left border-l-4 border-l-transparent transition flex items-center justify-between">
+                        <div>
+                            <div class="font-orbitron font-bold text-lg text-white">TITAN DREADNOUGHT</div>
+                            <div class="text-xs text-gray-400">중장갑 요새형 돌격함</div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                </div>
+
+                <!-- Interactive Ship Canvas & Stats Viewer -->
+                <div class="lg:col-span-8 glass-panel p-8 rounded-3xl border border-cyan-500/30 flex flex-col md:flex-row gap-8 items-center">
+                    <!-- Interactive Ship Preview Canvas -->
+                    <div class="w-full md:w-1/2 aspect-square relative bg-void/50 rounded-2xl flex items-center justify-center border border-slate-800">
+                        <canvas id="shipPreviewCanvas" class="w-full h-full"></canvas>
+                        <div class="absolute bottom-3 left-3 text-[10px] font-orbitron text-gray-500">3D THRUSTER ROTATION PREVIEW</div>
+                    </div>
+
+                    <!-- Ship Info Stats -->
+                    <div class="w-full md:w-1/2 flex flex-col justify-center">
+                        <div class="inline-block px-3 py-1 rounded bg-cyan-500/10 text-neon-cyan font-orbitron text-xs font-bold w-max mb-2" id="shipClassBadge">
+                            CLASS: INTERCEPTOR
+                        </div>
+                        <h3 class="font-orbitron font-black text-3xl text-white mb-2" id="shipName">ALPHA FIGHTER</h3>
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed" id="shipDesc">
+                            뛰어난 기동성과 균형 잡힌 보호막 시스템을 갖춘 지구 연방의 표준 요격기입니다. 초보 파일럿부터 베테랑까지 모두에게 적합합니다.
+                        </p>
+
+                        <!-- Stat Bars -->
+                        <div class="space-y-4 font-orbitron text-xs">
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>SPEED (기동성)</span>
+                                    <span id="statSpeedNum" class="text-neon-cyan">85/100</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="statSpeedBar" class="bg-neon-cyan h-full transition-all duration-500" style="width: 85%;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>FIREPOWER (화력)</span>
+                                    <span id="statPowerNum" class="text-neon-pink">70/100</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="statPowerBar" class="bg-neon-pink h-full transition-all duration-500" style="width: 70%;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>SHIELD (내구도)</span>
+                                    <span id="statShieldNum" class="text-neon-purple">75/100</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="statShieldBar" class="bg-neon-purple h-full transition-all duration-500" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lore / Sector Intel Section -->
+    <section id="lore" class="py-24 relative z-10 bg-space-dark/60 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-orbitron font-bold text-neon-yellow tracking-widest uppercase mb-2">GALAXY INTEL</h2>
+                <p class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white">세계관 및 성계 정보</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-neon-yellow to-neon-cyan mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Sector Card 1 -->
+                <div class="glass-card rounded-2xl p-6 border-t-2 border-t-neon-cyan">
+                    <div class="h-44 rounded-xl bg-gradient-to-b from-cyan-900/40 to-void flex items-center justify-center relative overflow-hidden mb-6 border border-cyan-500/20">
+                        <i class="fas fa-globe text-6xl text-neon-cyan opacity-80 animate-pulse"></i>
+                        <span class="absolute top-3 left-3 bg-cyan-500/20 text-neon-cyan text-[10px] font-orbitron px-2.5 py-1 rounded">SECTOR 01</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-2">네오 테라 (NEO TERRA)</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        인류 연방의 전초 기지이자 첫 번째 방어선. 침공해 오는 외계 선봉 함대와의 격렬한 교전이 벌어지는 전장입니다.
+                    </p>
+                    <span class="text-xs font-orbitron text-neon-cyan">위험도: ★★☆☆☆ (NORMAL)</span>
+                </div>
+
+                <!-- Sector Card 2 -->
+                <div class="glass-card rounded-2xl p-6 border-t-2 border-t-neon-pink">
+                    <div class="h-44 rounded-xl bg-gradient-to-b from-pink-900/40 to-void flex items-center justify-center relative overflow-hidden mb-6 border border-pink-500/20">
+                        <i class="fas fa-meteor text-6xl text-neon-pink opacity-80"></i>
+                        <span class="absolute top-3 left-3 bg-pink-500/20 text-neon-pink text-[10px] font-orbitron px-2.5 py-1 rounded">SECTOR 02</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-2">아스테로이드 벨 (BELT)</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        수많은 소행성 파편과 우주 쓰레기가 매설된 위험 지대. 좁은 시야 속에서 기습하는 외계 스카우트함을 경계해야 합니다.
+                    </p>
+                    <span class="text-xs font-orbitron text-neon-pink">위험도: ★★★★☆ (HARD)</span>
+                </div>
+
+                <!-- Sector Card 3 -->
+                <div class="glass-card rounded-2xl p-6 border-t-2 border-t-neon-purple">
+                    <div class="h-44 rounded-xl bg-gradient-to-b from-purple-900/40 to-void flex items-center justify-center relative overflow-hidden mb-6 border border-purple-500/20">
+                        <i class="fas fa-atom text-6xl text-neon-purple opacity-80 animate-spin" style="animation-duration: 20s;"></i>
+                        <span class="absolute top-3 left-3 bg-purple-500/20 text-neon-purple text-[10px] font-orbitron px-2.5 py-1 rounded">SECTOR 03</span>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-2">보이드 코어 (VOID CORE)</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        적 외계 문명의 본거지이자 모함이 위치한 암흑 공간. 차원문을 봉인하기 위한 최종 전투가 벌어집니다.
+                    </p>
+                    <span class="text-xs font-orbitron text-neon-purple">위험도: ★★★★★ (EXTREME)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hall of Fame Leaderboard -->
+    <section id="leaderboard" class="py-24 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-xs font-orbitron font-bold text-neon-cyan tracking-widest uppercase mb-2">HALL OF FAME</h2>
+                <p class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white">글로벌 리더보드</p>
+                <div class="w-20 h-1 bg-gradient-to-r from-neon-cyan to-neon-pink mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Leaderboard Card Table -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/30">
+                <div class="flex border-b border-slate-800 pb-4 mb-6 font-orbitron text-sm gap-6">
+                    <button class="text-neon-cyan font-bold border-b-2 border-neon-cyan pb-2">전체 시즌</button>
+                    <button class="text-gray-400 hover:text-white pb-2">이번 주 Top</button>
+                    <button class="text-gray-400 hover:text-white pb-2">클랜전</button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="font-orbitron text-xs text-gray-400 border-b border-slate-800/80">
+                                <th class="pb-3 pl-4">순위</th>
+                                <th class="pb-3">파일럿 ID</th>
+                                <th class="pb-3">사용 기체</th>
+                                <th class="pb-3">최고 기록</th>
+                                <th class="pb-3 pr-4 text-right">상태</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/50 font-orbitron text-sm">
+                            <tr class="hover:bg-cyan-500/5 transition">
+                                <td class="py-4 pl-4 text-neon-yellow font-bold"><i class="fas fa-crown mr-1"></i> 1st</td>
+                                <td class="py-4 font-bold text-white flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-neon-yellow/20 text-neon-yellow flex items-center justify-center text-xs">P1</span>
+                                    NEON_ACE_99
+                                </td>
+                                <td class="py-4 text-gray-300">Phantom Stealth</td>
+                                <td class="py-4 text-neon-cyan font-bold">1,842,900</td>
+                                <td class="py-4 pr-4 text-right"><span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">ONLINE</span></td>
+                            </tr>
+                            <tr class="hover:bg-cyan-500/5 transition">
+                                <td class="py-4 pl-4 text-gray-300 font-bold">2nd</td>
+                                <td class="py-4 font-bold text-white flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 text-gray-300 flex items-center justify-center text-xs">P2</span>
+                                    CYBER_VALKYRIE
+                                </td>
+                                <td class="py-4 text-gray-300">Alpha Fighter</td>
+                                <td class="py-4 text-neon-cyan font-bold">1,620,450</td>
+                                <td class="py-4 pr-4 text-right"><span class="px-2 py-1 rounded bg-slate-700 text-gray-400 text-[10px]">OFFLINE</span></td>
+                            </tr>
+                            <tr class="hover:bg-cyan-500/5 transition">
+                                <td class="py-4 pl-4 text-amber-600 font-bold">3rd</td>
+                                <td class="py-4 font-bold text-white flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 text-gray-300 flex items-center justify-center text-xs">P3</span>
+                                    VOID_WALKER
+                                </td>
+                                <td class="py-4 text-gray-300">Titan Dreadnought</td>
+                                <td class="py-4 text-neon-cyan font-bold">1,495,100</td>
+                                <td class="py-4 pr-4 text-right"><span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">ONLINE</span></td>
+                            </tr>
+                            <tr class="hover:bg-cyan-500/5 transition">
+                                <td class="py-4 pl-4 text-gray-500">4th</td>
+                                <td class="py-4 font-bold text-white flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 text-gray-300 flex items-center justify-center text-xs">P4</span>
+                                    STAR_STRIKER
+                                </td>
+                                <td class="py-4 text-gray-300">Alpha Fighter</td>
+                                <td class="py-4 text-neon-cyan font-bold">1,310,800</td>
+                                <td class="py-4 pr-4 text-right"><span class="px-2 py-1 rounded bg-slate-700 text-gray-400 text-[10px]">OFFLINE</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Specs & Download -->
+    <section id="download" class="py-24 relative z-10 bg-space-dark/80 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-neon-cyan/40 relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-neon-cyan font-orbitron text-xs font-bold tracking-widest uppercase">GET THE GAME</span>
+                        <h2 class="text-3xl sm:text-5xl font-orbitron font-black text-white mt-2 mb-4">우주 전선으로 출격하세요</h2>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                            스팀, 모바일, 웹 어디서나 자유롭게 COSMIC STRIKER를 다운로드하고 플레이할 수 있습니다. 
+                            지금 가입하고 전용 스타터 패키키지를 받아가세요!
+                        </p>
+
+                        <!-- Download Platform Buttons -->
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="playUiSound()" class="btn-neon text-black font-orbitron font-extrabold px-6 py-3.5 rounded-xl flex items-center gap-3 text-sm">
+                                <i class="fab fa-steam text-lg"></i> STEAM PC 다운로드
+                            </button>
+                            <button onclick="playUiSound()" class="glass-panel hover:bg-slate-800 text-white font-orbitron font-bold px-6 py-3.5 rounded-xl border border-slate-700 flex items-center gap-3 text-sm transition">
+                                <i class="fab fa-google-play text-lg"></i> Google Play
+                            </button>
+                            <button onclick="playUiSound()" class="glass-panel hover:bg-slate-800 text-white font-orbitron font-bold px-6 py-3.5 rounded-xl border border-slate-700 flex items-center gap-3 text-sm transition">
+                                <i class="fab fa-apple text-lg"></i> App Store
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Requirements Card -->
+                    <div class="bg-void/80 p-6 rounded-2xl border border-slate-800 font-sans">
+                        <h3 class="font-orbitron font-bold text-white text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-desktop text-neon-cyan"></i> PC 권장 사양
+                        </h3>
+                        <div class="space-y-3 text-xs text-gray-300">
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-gray-500">운영체제</span>
+                                <span>Windows 10 / 11 (64-bit)</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-gray-500">프로세서</span>
+                                <span>Intel Core i5-8400 / AMD Ryzen 5 2600</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-gray-500">메모리</span>
+                                <span>8 GB RAM</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-gray-500">그래픽</span>
+                                <span>NVIDIA GTX 1060 / RX 580 (DirectX 12)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">저장공간</span>
+                                <span>4 GB 사용 가능 공간</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-void py-12 border-t border-slate-900 relative z-10 text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-rocket text-neon-cyan text-xl"></i>
+                <span class="font-orbitron font-bold text-white text-lg">COSMIC STRIKER</span>
+            </div>
+
+            <div class="flex gap-6 font-orbitron">
+                <a href="#" class="hover:text-neon-cyan transition">개인정보처리방침</a>
+                <a href="#" class="hover:text-neon-cyan transition">이용약관</a>
+                <a href="#" class="hover:text-neon-cyan transition">고객센터</a>
+            </div>
+
+            <div class="flex gap-4 text-base text-gray-400">
+                <a href="#" class="hover:text-neon-cyan"><i class="fab fa-discord"></i></a>
+                <a href="#" class="hover:text-neon-cyan"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-neon-cyan"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-8 text-gray-600">
+            &copy; 2026 COSMIC STRIKER Studio. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Video Trailer Modal -->
+    <div id="trailerModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="relative w-full max-w-4xl aspect-video bg-void rounded-2xl overflow-hidden border border-neon-cyan/50 flex flex-col items-center justify-center">
+            <button onclick="closeTrailerModal()" class="absolute top-4 right-4 text-white hover:text-neon-pink text-2xl z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="text-center p-8">
+                <i class="fas fa-play-circle text-6xl text-neon-cyan mb-4 animate-bounce"></i>
+                <h3 class="font-orbitron font-bold text-2xl text-white mb-2">OFFICIAL GAME TRAILER</h3>
+                <p class="text-gray-400 text-sm">트레일러 영상 데모 창입니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Web Audio API Sound Generator */
+        class SoundSystem {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+            }
+            playBeep(freq = 600, duration = 0.08) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e){}
+            }
+            playLaser() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.1);
+                } catch(e){}
+            }
+            playExplosion() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const dur = 0.3;
+                    const bufSize = this.ctx.sampleRate * dur;
+                    const buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(400, this.ctx.currentTime);
+                    filter.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + dur);
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + dur);
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    noise.start();
+                } catch(e){}
+            }
+        }
+        const snd = new SoundSystem();
+        function playUiSound() { snd.playBeep(800, 0.05); }
+
+        /* Navigation Helpers */
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* Mobile Menu Toggle */
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        /* Modal Controllers */
+        function openTrailerModal() {
+            playUiSound();
+            document.getElementById('trailerModal').classList.remove('hidden');
+        }
+        function closeTrailerModal() {
+            playUiSound();
+            document.getElementById('trailerModal').classList.add('hidden');
+        }
+
+        // Hero Background Parallax Starfield
+        (function initHeroStarfield() {
+            const canvas = document.getElementById('heroStarfield');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const stars = Array.from({ length: 120 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2 + 0.5,
+                speed: Math.random() * 1.5 + 0.2,
+                color: ['#00f3ff', '#ff007f', '#ffffff'][Math.floor(Math.random() * 3)]
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                stars.forEach(s => {
+                    s.y += s.speed;
+                    if (s.y > height) {
+                        s.y = 0;
+                        s.x = Math.random() * width;
+                    }
+                    ctx.fillStyle = s.color;
+                    ctx.fillRect(s.x, s.y, s.size, s.size * 1.5);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // Fleet Showcase Ship Specs Database & Canvas Renderer
+        const shipsData = {
+            alpha: {
+                name: 'ALPHA FIGHTER',
+                class: 'CLASS: INTERCEPTOR',
+                desc: '뛰어난 기동성과 균형 잡힌 보호막 시스템을 갖춘 지구 연방의 표준 요격기입니다. 다채로운 전투 상황에 완벽 대응합니다.',
+                color: '#00f3ff',
+                speed: 85, power: 70, shield: 75
+            },
+            phantom: {
+                name: 'PHANTOM STEALTH',
+                class: 'CLASS: STEALTH RECON',
+                desc: '초고속 입자 엔진과 스텔스 클로킹 모듈이 탑재된 암살용 전투기. 높은 연사 속도로 적의 적재함을 단숨에 파괴합니다.',
+                color: '#ff007f',
+                speed: 98, power: 88, shield: 50
+            },
+            titan: {
+                name: 'TITAN DREADNOUGHT',
+                class: 'CLASS: HEAVY ASSAULT',
+                desc: '중장갑 티타늄 합금 페어링과 플라즈마 대포로 무장한 요새형 전투기. 느리지만 강력한 한 방 화력을 선사합니다.',
+                color: '#9d4edd',
+                speed: 55, power: 98, shield: 95
+            }
+        };
+
+        let activeShipKey = 'alpha';
+        const shipCanvas = document.getElementById('shipPreviewCanvas');
+        const shipCtx = shipCanvas ? shipCanvas.getContext('2d') : null;
+        let shipAngle = 0;
+
+        function selectShip(key) {
+            playUiSound();
+            activeShipKey = key;
+            const data = shipsData[key];
+
+            // Update UI Elements
+            document.getElementById('shipName').textContent = data.name;
+            document.getElementById('shipClassBadge').textContent = data.class;
+            document.getElementById('shipDesc').textContent = data.desc;
+
+            document.getElementById('statSpeedNum').textContent = `${data.speed}/100`;
+            document.getElementById('statSpeedBar').style.width = `${data.speed}%`;
+
+            document.getElementById('statPowerNum').textContent = `${data.power}/100`;
+            document.getElementById('statPowerBar').style.width = `${data.power}%`;
+
+            document.getElementById('statShieldNum').textContent = `${data.shield}/100`;
+            document.getElementById('statShieldBar').style.width = `${data.shield}%`;
+
+            // Active button styles
+            document.querySelectorAll('.ship-selector-btn').forEach(btn => {
+                btn.classList.remove('border-l-neon-cyan', 'border-l-neon-pink', 'border-l-neon-purple');
+                btn.classList.add('border-l-transparent');
+            });
+
+            const activeBtn = document.getElementById(`shipBtn-${key}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-l-transparent');
+                activeBtn.classList.add(key === 'alpha' ? 'border-l-neon-cyan' : key === 'phantom' ? 'border-l-neon-pink' : 'border-l-neon-purple');
+            }
+        }
+
+        // Render Rotating 2D/3D Ship Canvas in Hangar
+        (function renderShipHangarCanvas() {
+            if (!shipCanvas || !shipCtx) return;
+            
+            function resize() {
+                shipCanvas.width = shipCanvas.clientWidth;
+                shipCanvas.height = shipCanvas.clientHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function draw() {
+                const w = shipCanvas.width;
+                const h = shipCanvas.height;
+                const ship = shipsData[activeShipKey];
+
+                shipCtx.clearRect(0, 0, w, h);
+                shipAngle += 0.02;
+
+                shipCtx.save();
+                shipCtx.translate(w / 2, h / 2);
+
+                // Floating Bobbing effect
+                const bob = Math.sin(shipAngle) * 8;
+                shipCtx.translate(0, bob);
+
+                // Ship Wireframe Vector Visual
+                shipCtx.strokeStyle = ship.color;
+                shipCtx.lineWidth = 2.5;
+                shipCtx.shadowBlur = 15;
+                shipCtx.shadowColor = ship.color;
+
+                shipCtx.beginPath();
+                shipCtx.moveTo(0, -45);
+                shipCtx.lineTo(35, 35);
+                shipCtx.lineTo(0, 20);
+                shipCtx.lineTo(-35, 35);
+                shipCtx.closePath();
+                shipCtx.stroke();
+
+                // Engine Thruster Spark
+                shipCtx.fillStyle = '#ffe600';
+                shipCtx.beginPath();
+                shipCtx.arc(0, 28, 4 + Math.random() * 3, 0, Math.PI * 2);
+                shipCtx.fill();
+
+                shipCtx.restore();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // Playable Mini Space Shooter Embedded Game Engine
+        (function initMiniGame() {
+            const canvas = document.getElementById('miniGameCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const startOverlay = document.getElementById('gameStartOverlay');
+            const gameOverOverlay = document.getElementById('gameOverOverlay');
+            const btnStart = document.getElementById('btnStartMiniGame');
+            const btnRestart = document.getElementById('btnRestartMiniGame');
+            const finalScoreDisplay = document.getElementById('finalScoreDisplay');
+
+            let isRunning = false;
+            let score = 0;
+            let keys = {};
+            let touchPos = null;
+
+            function resizeCanvas() {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Player Ship Class
+            class GamePlayer {
+                constructor() {
+                    this.x = canvas.width / 2;
+                    this.y = canvas.height - 60;
+                    this.size = 20;
+                    this.speed = 6;
+                    this.shield = 100;
+                }
+                update() {
+                    if (keys['ArrowLeft'] || keys['a'] || keys['A']) this.x -= this.speed;
+                    if (keys['ArrowRight'] || keys['d'] || keys['D']) this.x += this.speed;
+                    if (keys['ArrowUp'] || keys['w'] || keys['W']) this.y -= this.speed;
+                    if (keys['ArrowDown'] || keys['s'] || keys['S']) this.y += this.speed;
+
+                    if (touchPos) {
+                        this.x += (touchPos.x - this.x) * 0.2;
+                        this.y += (touchPos.y - this.y) * 0.2;
+                    }
+
+                    this.x = Math.max(this.size, Math.min(canvas.width - this.size, this.x));
+                    this.y = Math.max(this.size, Math.min(canvas.height - this.size, this.y));
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.strokeStyle = '#00f3ff';
+                    ctx.lineWidth = 2;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#00f3ff';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(this.size, this.size);
+                    ctx.lineTo(0, this.size * 0.6);
+                    ctx.lineTo(-this.size, this.size);
+                    ctx.closePath();
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // Bullet Class
+            class Bullet {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.speed = 10;
+                }
+                update() { this.y -= this.speed; }
+                draw() {
+                    ctx.fillStyle = '#00f3ff';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#00f3ff';
+                    ctx.fillRect(this.x - 2, this.y, 4, 10);
+                }
+            }
+
+            // Enemy Class
+            class Enemy {
+                constructor() {
+                    this.x = Math.random() * (canvas.width - 40) + 20;
+                    this.y = -30;
+                    this.speed = Math.random() * 2 + 1.5;
+                    this.size = 18;
+                }
+                update() { this.y += this.speed; }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.strokeStyle = '#ff007f';
+                    ctx.lineWidth = 2;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#ff007f';
+                    ctx.beginPath();
+                    ctx.moveTo(0, this.size);
+                    ctx.lineTo(-this.size, -this.size);
+                    ctx.lineTo(this.size, -this.size);
+                    ctx.closePath();
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            let player = new GamePlayer();
+            let bullets = [];
+            let enemies = [];
+            let lastShoot = 0;
+
+            function startGame() {
+                snd.init();
+                resizeCanvas();
+                player = new GamePlayer();
+                bullets = [];
+                enemies = [];
+                score = 0;
+                isRunning = true;
+                startOverlay.classList.add('hidden');
+                gameOverOverlay.classList.add('hidden');
+                requestAnimationFrame(gameLoop);
+            }
+
+            function gameOver() {
+                isRunning = false;
+                snd.playExplosion();
+                finalScoreDisplay.textContent = score.toString().padStart(6, '0');
+                gameOverOverlay.classList.remove('hidden');
+            }
+
+            let spawnTimer = 0;
+            function gameLoop() {
+                if (!isRunning) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Auto/Space Shoot
+                const now = Date.now();
+                if (keys[' '] && now - lastShoot > 150) {
+                    bullets.push(new Bullet(player.x, player.y - 15));
+                    snd.playLaser();
+                    lastShoot = now;
+                }
+
+                // Player Update
+                player.update();
+                player.draw();
+
+                // Bullets
+                bullets.forEach((b, i) => {
+                    b.update();
+                    b.draw();
+                    if (b.y < -10) bullets.splice(i, 1);
+                });
+
+                // Spawn Enemies
+                spawnTimer++;
+                if (spawnTimer > 40) {
+                    enemies.push(new Enemy());
+                    spawnTimer = 0;
+                }
+
+                // Enemies Update & Collision
+                enemies.forEach((e, ei) => {
+                    e.update();
+                    e.draw();
+
+                    // Collision with Player
+                    const dist = Math.hypot(e.x - player.x, e.y - player.y);
+                    if (dist < e.size + player.size) {
+                        gameOver();
+                    }
+
+                    // Collision with Bullets
+                    bullets.forEach((b, bi) => {
+                        const bDist = Math.hypot(e.x - b.x, e.y - b.y);
+                        if (bDist < e.size + 4) {
+                            enemies.splice(ei, 1);
+                            bullets.splice(bi, 1);
+                            score += 100;
+                            snd.playExplosion();
+                        }
+                    });
+
+                    if (e.y > canvas.height + 30) enemies.splice(ei, 1);
+                });
+
+                // Render HUD Score
+                ctx.fillStyle = '#00f3ff';
+                ctx.font = 'bold 16px Orbitron';
+                ctx.fillText(`SCORE: ${score}`, 15, 30);
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            // Input Listeners
+            window.addEventListener('keydown', e => { keys[e.key] = true; });
+            window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+            canvas.addEventListener('mousemove', e => {
+                if (!isRunning) return;
+                const rect = canvas.getBoundingClientRect();
+                touchPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            });
+            canvas.addEventListener('mouseleave', () => { touchPos = null; });
+            canvas.addEventListener('click', () => {
+                if (isRunning && Date.now() - lastShoot > 150) {
+                    bullets.push(new Bullet(player.x, player.y - 15));
+                    snd.playLaser();
+                    lastShoot = Date.now();
+                }
+            });
+
+            btnStart.addEventListener('click', startGame);
+            btnRestart.addEventListener('click', startGame);
+        })();
+    </script>
+</body>
+</html>
